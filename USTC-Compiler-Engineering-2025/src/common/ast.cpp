@@ -389,14 +389,6 @@ Value* ASTSimpleExpression::accept(ASTVisitor &visitor) { return visitor.visit(*
 Value* ASTAdditiveExpression::accept(ASTVisitor &visitor) {
     return visitor.visit(*this);
 }
-
-Value* ASTDerefAssignExpression::accept(ASTVisitor &visitor) {
-    return visitor.visit(*this);
-}
-
-Value* ASTDerefVar::accept(ASTVisitor &visitor) {
-    return visitor.visit(*this);
-}
 Value* ASTVar::accept(ASTVisitor &visitor) { return visitor.visit(*this); }
 Value* ASTTerm::accept(ASTVisitor &visitor) { return visitor.visit(*this); }
 Value* ASTCall::accept(ASTVisitor &visitor) { return visitor.visit(*this); }
@@ -484,26 +476,6 @@ Value* ASTPrinter::visit(ASTExpressionStmt &node) {
     add_depth();
     if (node.expression != nullptr)
         node.expression->accept(*this);
-    remove_depth();
-    return nullptr;
-}
-
-Value* ASTPrinter::visit(ASTDerefAssignExpression &node) {
-    std::string type_s;
-    std::string str(depth, ' ');
-    std::cout << str << "DerefAssignExpression" << std::endl;
-    add_depth();
-    node.var->accept(*this);
-    node.expression->accept(*this);
-    remove_depth();
-    return nullptr;
-}
-
-Value* ASTPrinter::visit(ASTDerefVar &node) {
-    std::string str(depth, ' ');
-    std::cout << str << "DerefVar" << std::endl;
-    add_depth();
-    node.var->accept(*this);
     remove_depth();
     return nullptr;
 }

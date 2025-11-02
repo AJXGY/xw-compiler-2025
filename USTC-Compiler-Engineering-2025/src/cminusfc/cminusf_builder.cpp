@@ -299,19 +299,7 @@ Value *CminusfBuilder::visit(ASTReturnStmt &node) {
     return nullptr;
 }
 
-Value *CminusfBuilder::visit(ASTDerefVar &node) {
-    context.require_lvalue = true;
-    auto *ptr = node.var->accept(*this);
-    context.require_lvalue = false;
-    
-    auto *loaded_ptr = builder->create_load(ptr);
-    
-    if (!context.require_lvalue) {
-        return builder->create_load(loaded_ptr);
-    }
-    
-    return loaded_ptr;
-}
+
 
 Value *CminusfBuilder::visit(ASTVar &node) {
     auto *var = scope.find(node.id);
@@ -398,24 +386,7 @@ Value *CminusfBuilder::visit(ASTAssignExpression &node) {
     return expr_result;
 }
 
-Value *CminusfBuilder::visit(ASTDerefAssignExpression &node) {
-    auto *expr_result = node.expression->accept(*this);
-    context.require_lvalue = true;
-    auto *var_addr = node.var->accept(*this);
-    
-    auto *ptr = builder->create_load(var_addr);
-    
-    if (ptr->get_type()->get_pointer_element_type() != expr_result->get_type()) {
-        if (expr_result->get_type() == INT32_T) {
-            expr_result = builder->create_sitofp(expr_result, FLOAT_T);
-        } else {
-            expr_result = builder->create_fptosi(expr_result, INT32_T);
-        }
-    }
-    
-    builder->create_store(expr_result, ptr);
-    return expr_result;
-}
+
 
 Value *CminusfBuilder::visit(ASTSimpleExpression &node) {
     if (node.additive_expression_r == nullptr) {

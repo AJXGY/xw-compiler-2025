@@ -176,14 +176,6 @@ struct ASTAssignExpression : ASTExpression {
     std::shared_ptr<ASTExpression> expression;
 };
 
-
-// 添加这个新类
-struct ASTDerefAssignExpression : ASTExpression {
-    virtual Value* accept(ASTVisitor &) override final;
-    std::shared_ptr<ASTVar> var;
-    std::shared_ptr<ASTExpression> expression;
-};
-
 struct ASTSimpleExpression : ASTExpression {
     virtual Value* accept(ASTVisitor &) override final;
     std::shared_ptr<ASTAdditiveExpression> additive_expression_l;
@@ -196,12 +188,6 @@ struct ASTVar : ASTFactor {
     std::string id;
     // nullptr if var is of int type
     std::shared_ptr<ASTExpression> expression;
-};
-
-
-struct ASTDerefVar : ASTFactor {
-    virtual Value* accept(ASTVisitor &) override final;
-    std::shared_ptr<ASTVar> var;
 };
 
 struct ASTAdditiveExpression : ASTNode {
@@ -237,14 +223,13 @@ class ASTVisitor {
     virtual Value* visit(ASTIterationStmt &) = 0;
     virtual Value* visit(ASTReturnStmt &) = 0;
     virtual Value* visit(ASTAssignExpression &) = 0;
-    virtual Value* visit(ASTDerefAssignExpression &) = 0;  // 添加这行
     virtual Value* visit(ASTSimpleExpression &) = 0;
     virtual Value* visit(ASTAdditiveExpression &) = 0;
     virtual Value* visit(ASTVar &) = 0;
-    virtual Value* visit(ASTDerefVar &) = 0;  // 添加这行
     virtual Value* visit(ASTTerm &) = 0;
     virtual Value* visit(ASTCall &) = 0;
 };
+
 class ASTPrinter : public ASTVisitor {
   public:
     virtual Value* visit(ASTProgram &) override final;
@@ -258,11 +243,9 @@ class ASTPrinter : public ASTVisitor {
     virtual Value* visit(ASTIterationStmt &) override final;
     virtual Value* visit(ASTReturnStmt &) override final;
     virtual Value* visit(ASTAssignExpression &) override final;
-    virtual Value* visit(ASTDerefAssignExpression &) override final;  // 添加这行
     virtual Value* visit(ASTSimpleExpression &) override final;
     virtual Value* visit(ASTAdditiveExpression &) override final;
     virtual Value* visit(ASTVar &) override final;
-    virtual Value* visit(ASTDerefVar &) override final;  // 添加这行
     virtual Value* visit(ASTTerm &) override final;
     virtual Value* visit(ASTCall &) override final;
     void add_depth() { depth += 2; }
